@@ -1,4 +1,5 @@
-/*** includes ***/
+/***
+ * includes ***/
 
 #define _DEFAULT_SOURCE
 #define _BSD_SOURCE
@@ -14,7 +15,8 @@
 #include <termios.h>
 #include <unistd.h>
 
-/*** defines ***/
+/***
+ * defines ***/
 
 #define KILO_VERSION "0.0.1"
 #define KILO_TAB_STOP 8
@@ -33,7 +35,8 @@ enum editorKey {
     PAGE_DOWN
 };
 
-/*** data ***/
+/***
+ * data ***/
 
 typedef struct erow {
     int size;
@@ -55,7 +58,8 @@ struct editorConfig {
     struct termios orig_termios;
 } E;
 
-/*** terminal ***/
+/***
+ * terminal ***/
 
 void die(const char *s) {
     write(STDOUT_FILENO, "\x1b[2J", 4);
@@ -174,7 +178,8 @@ int getWindowSize(int* rows, int* cols) {
     }
 }
 
-/*** editor operations ***/
+/***
+ * editor operations ***/
 
 int editorRowCxToRx(erow *row, int cx) {
     int rx = 0;
@@ -229,7 +234,8 @@ void editorAppendRow(char *s, size_t len) {
     ++E.numrows;
 }
 
-/*** file i/o **/
+/***
+ * file i/o ***/
 
 void editorOpen(char* filename) {
     FILE* fp = fopen(filename, "r");
@@ -247,7 +253,8 @@ void editorOpen(char* filename) {
     fclose(fp);
 }
 
-/*** append buffer ***/
+/***
+ * append buffer ***/
 
 struct abuf {
     char *b;
@@ -269,7 +276,8 @@ void abFree(struct abuf *ab) {
     free(ab->b);
 }
 
-/*** output ***/
+/***
+ * output ***/
 
 void editorScroll() {
     E.rx = 0;
@@ -349,7 +357,8 @@ void editorRefreshScreen() {
     abFree(&ab);
 }
 
-/*** input ***/
+/***
+ * input ***/
 
 void editorMoveCursor(int key) {
     erow *row = E.cy >= E.numrows ? NULL : &E.row[E.cy];
@@ -424,7 +433,8 @@ void editorProcessKeyPress() {
     }
 }
 
-/*** init ***/
+/***
+ * init ***/
 
 void initEditor() {
     E.cx = 0;
