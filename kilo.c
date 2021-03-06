@@ -254,6 +254,7 @@ void editorUpdateSyntax(erow *row) {
     if (!E.syntax) return;
 
     char **keywords = E.syntax->keywords;
+    (void)keywords;
 
     char *scs = E.syntax->singleline_comment_start;
     int scs_len = scs ? strlen(scs) : 0;
@@ -750,7 +751,17 @@ void editorDrawRows(struct abuf *ab) {
             int current_color = -1;
             int j;
             for (j = 0; j < len; ++j, ++c, ++hl) {
-                if (*hl == HL_NORMAL) {
+                if (iscntrl(*c)) {
+                    char sym = (*c <= 26) ? ('@' + *c) : '?';
+                    abAppend(ab, "\x1b[7m", 4);
+                    abAppend(ab, &sym, 1);
+                    abAppend(ab, "\x1b[m", 3);
+                    if (current_color != -1) {
+                        char buf[16];
+                        int clen = snprintf(buf, sizeof(buf), "\x1b[%dm", current_color);
+                        abAppend(ab, buf, clen);
+                    }
+                } else if (*hl == HL_NORMAL) {
                     if (current_color != -1) {
                         current_color = -1;
                         abAppend(ab, "\x1b[39m", 5);
